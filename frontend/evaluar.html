@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Evaluar Docente</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-primary p-3">
+    <a class="navbar-brand" href="index.html">📚 Evaluación Docente</a>
+  </nav>
+
+  <!-- Contenedor -->
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">Formulario de Evaluación</h2>
+
+    <form id="form-evaluacion" class="card p-4 shadow">
+      <!-- Select dinámico -->
+      <div class="mb-3">
+        <label class="form-label">Docente</label>
+        <select id="docente" name="id_docente" class="form-select">
+          <!-- Aquí se insertan dinámicamente los docentes desde MySQL -->
+        </select>
+      </div>
+
+      <!-- Claridad -->
+      <div class="mb-3">
+        <label class="form-label">Claridad</label>
+        <input type="range" class="form-range" name="claridad" min="1" max="5" required>
+      </div>
+
+      <!-- Puntualidad -->
+      <div class="mb-3">
+        <label class="form-label">Puntualidad</label>
+        <input type="range" class="form-range" name="puntualidad" min="1" max="5" required>
+      </div>
+
+      <!-- Dominio -->
+      <div class="mb-3">
+        <label class="form-label">Dominio del tema</label>
+        <input type="range" class="form-range" name="dominio_tema" min="1" max="5" required>
+      </div>
+
+      <!-- Trato -->
+      <div class="mb-3">
+        <label class="form-label">Trato hacia los estudiantes</label>
+        <input type="range" class="form-range" name="trato_estudiantes" min="1" max="5" required>
+      </div>
+
+      <!-- Comentarios -->
+      <div class="mb-3">
+        <label class="form-label">Comentarios</label>
+        <textarea name="comentarios" class="form-control" rows="3"></textarea>
+      </div>
+
+      <!-- Botón -->
+      <button type="submit" class="btn btn-success">Enviar Evaluación</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>
