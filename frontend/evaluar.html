@@ -9,58 +9,71 @@
 <body>
   <!-- Navbar -->
   <nav class="navbar navbar-dark bg-primary p-3">
-    <a class="navbar-brand" href="index.html">📚 Evaluación Docente</a>
+    <a class="navbar-brand" href="index.html">Evaluación Docente</a>
+    <div>
+      <a href="resultados.html" class="btn btn-light btn-sm me-2">Resultados</a>
+      <button id="btnLogout" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
+    </div>
   </nav>
 
   <!-- Contenedor -->
   <div class="container mt-5">
-    <h2 class="mb-4 text-center">Formulario de Evaluación</h2>
+    <h2 class="mb-4">Nueva evaluación</h2>
 
-    <form id="form-evaluacion" class="card p-4 shadow">
-      <!-- Select dinámico -->
+    <!-- Info de sesión -->
+    <div id="userInfo" class="alert alert-info d-none"></div>
+
+    <form id="form-evaluacion" class="card p-3">
+      <!-- Docente -->
       <div class="mb-3">
         <label class="form-label">Docente</label>
-        <select id="docente" name="id_docente" class="form-select">
-          <!-- Aquí se insertan dinámicamente los docentes desde MySQL -->
-        </select>
+        <select name="id_docente" id="select-docente" class="form-select" required></select>
       </div>
 
-      <!-- Claridad -->
+      <!-- Claridad (1..10) -->
       <div class="mb-3">
-        <label class="form-label">Claridad</label>
-        <input type="range" class="form-range" name="claridad" min="1" max="5" required>
+        <label class="form-label d-flex justify-content-between">
+          <span>Claridad al explicar</span> <span id="lbl-claridad">5</span>
+        </label>
+        <input type="range" class="form-range" name="claridad" min="1" max="10" value="5" oninput="document.getElementById('lbl-claridad').textContent=this.value" required>
       </div>
 
-      <!-- Puntualidad -->
+      <!-- Puntualidad (1..10) -->
       <div class="mb-3">
-        <label class="form-label">Puntualidad</label>
-        <input type="range" class="form-range" name="puntualidad" min="1" max="5" required>
+        <label class="form-label d-flex justify-content-between">
+          <span>Puntualidad</span> <span id="lbl-puntualidad">5</span>
+        </label>
+        <input type="range" class="form-range" name="puntualidad" min="1" max="10" value="5" oninput="document.getElementById('lbl-puntualidad').textContent=this.value" required>
       </div>
 
-      <!-- Dominio -->
+      <!-- Dominio del tema (1..10) -->
       <div class="mb-3">
-        <label class="form-label">Dominio del tema</label>
-        <input type="range" class="form-range" name="dominio_tema" min="1" max="5" required>
+        <label class="form-label d-flex justify-content-between">
+          <span>Dominio del tema</span> <span id="lbl-dominio">5</span>
+        </label>
+        <input type="range" class="form-range" name="dominio_tema" min="1" max="10" value="5" oninput="document.getElementById('lbl-dominio').textContent=this.value" required>
       </div>
 
-      <!-- Trato -->
+      <!-- Trato (1..10) -->
       <div class="mb-3">
-        <label class="form-label">Trato hacia los estudiantes</label>
-        <input type="range" class="form-range" name="trato_estudiantes" min="1" max="5" required>
+        <label class="form-label d-flex justify-content-between">
+          <span>Trato hacia los estudiantes</span> <span id="lbl-trato">5</span>
+        </label>
+        <input type="range" class="form-range" name="trato_estudiantes" min="1" max="10" value="5" oninput="document.getElementById('lbl-trato').textContent=this.value" required>
       </div>
 
       <!-- Comentarios -->
       <div class="mb-3">
         <label class="form-label">Comentarios</label>
-        <textarea name="comentarios" class="form-control" rows="3"></textarea>
+        <textarea name="comentarios" class="form-control" rows="3" placeholder="Opcional"></textarea>
       </div>
 
-      <!-- Botón -->
       <button type="submit" class="btn btn-success">Enviar Evaluación</button>
     </form>
   </div>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

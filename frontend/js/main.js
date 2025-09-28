@@ -1,139 +1,190 @@
 // =========================
-// 📌 Enviar evaluación con menú interactivo
+// Config
 // =========================
-const form = document.getElementById("form-evaluacion");
-if (form) {
+const API = "http://localhost:3000/api";
+
+// =========================
+// Helpers de Auth (token en localStorage)
+// =========================
+const getToken = () => localStorage.getItem("token");
+const setToken = (t) => localStorage.setItem("token", t);
+const clearToken = () => localStorage.removeItem("token");
+
+function authHeaders() {
+  const t = getToken();
+  return t ? { "Authorization": `Bearer ${t}` } : {};
+}
+
+function ensureAuthOnPage() {
+  // En páginas que requieren sesión (evaluar.html)
+  if (!getToken()) {
+    // Redirige a index para loguearse
+    window.location.href = "index.html";
+  }
+}
+
+function showLogoutIfNeeded() {
+  const btn = document.getElementById("btnLogout");
+  if (btn) {
+    if (getToken()) {
+      btn.classList.remove("d-none");
+      btn.onclick = () => {
+        clearToken();
+        window.location.href = "index.html";
+      };
+    } else {
+      btn.classList.add("d-none");
+    }
+  }
+}
+
+// =========================
+// Lógica de INDEX: modal de login/registro
+// =========================
+(function initIndex() {
+  const onIndex = location.pathname.endsWith("index.html") || location.pathname.endsWith("/") || location.pathname.endsWith("\\");
+  if (!onIndex) return;
+
+  showLogoutIfNeeded();
+
+  // Muestra modal si no hay token
+  const needsAuth = !getToken();
+  const modalEl = document.getElementById("authModal");
+  let modal;
+  if (modalEl) modal = new bootstrap.Modal(modalEl, { backdrop: "static", keyboard: false });
+  if (needsAuth && modal) modal.show();
+
+  const authMsg = document.getElementById("authMsg");
+
+  // Login
+  const formLogin = document.getElementById("form-login");
+  if (formLogin) {
+    formLogin.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      authMsg.textContent = "";
+      const data = Object.fromEntries(new FormData(formLogin));
+      try {
+        const res = await fetch(`${API}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message || "Error al iniciar sesión");
+        setToken(json.token);
+        authMsg.textContent = "✅ Sesión iniciada";
+        setTimeout(() => modal.hide(), 600);
+        showLogoutIfNeeded();
+      } catch (err) {
+        authMsg.textContent = "❌ " + err.message;
+      }
+    });
+  }
+
+  // Registro
+  const formRegister = document.getElementById("form-register");
+  if (formRegister) {
+    formRegister.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      authMsg.textContent = "";
+      const data = Object.fromEntries(new FormData(formRegister));
+      try {
+        const res = await fetch(`${API}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message || "Error al registrar");
+        setToken(json.token);
+        authMsg.textContent = "✅ Cuenta creada. Sesión iniciada";
+        setTimeout(() => modal.hide(), 600);
+        showLogoutIfNeeded();
+      } catch (err) {
+        authMsg.textContent = "❌ " + (err.message || "Error");
+      }
+    });
+  }
+})();
+
+// =========================
+/* Evaluar: carga docentes y envía evaluación (requiere login) */
+// =========================
+(function initEvaluar() {
+  const onPage = location.pathname.endsWith("evaluar.html");
+  if (!onPage) return;
+
+  ensureAuthOnPage();
+  showLogoutIfNeeded();
+
+  const userInfo = document.getElementById("userInfo");
+  if (userInfo) {
+    userInfo.classList.remove("d-none");
+    userInfo.textContent = "Estás autenticado. Ya puedes enviar tu evaluación.";
+  }
+
+  // Cargar docentes
+  const select = document.getElementById("select-docente");
+  fetch(`${API}/evaluaciones/docentes`)
+    .then(r => r.json())
+    .then(list => {
+      select.innerHTML = list.map(d => `<option value="${d.id_docente}">${d.nombre} — ${d.materia}</option>`).join("");
+    });
+
+  // Enviar evaluación
+  const form = document.getElementById("form-evaluacion");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form));
 
     try {
-      const res = await fetch("http://localhost:3000/api/evaluaciones/guardar", {
+      const res = await fetch(`${API}/evaluaciones/guardar`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(data)
       });
-
-      const result = await res.json();
-      if (res.ok) {
-        // Menú interactivo después de guardar
-        const opcion = confirm(`${result.message}\n\n¿Deseas ver los resultados?\n\nAceptar = Ver resultados\nCancelar = Elegir otra acción`);
-
-        if (opcion) {
-          // Ir a resultados
-          window.location.href = "resultados.html";
-        } else {
-          const siguiente = confirm("¿Quieres hacer una nueva evaluación?\n\nAceptar = Nueva evaluación\nCancelar = Menú principal");
-          if (siguiente) {
-            form.reset(); // limpia el formulario para otra evaluación
-          } else {
-            window.location.href = "index.html"; // volver al inicio
-          }
-        }
-      } else {
-        alert("❌ Error: " + result.message);
-      }
-    } catch (error) {
-      console.error("Error al enviar evaluación:", error);
-      alert("❌ No se pudo enviar la evaluación. Revisa el servidor.");
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Error al guardar");
+      alert("✅ Evaluación guardada");
+      form.reset();
+    } catch (err) {
+      alert("❌ " + err.message);
     }
   });
-}
+})();
 
 // =========================
-// 📌 Cargar docentes dinámicamente en evaluar.html
+// Resultados: pinta tabla y estado
 // =========================
-const selectDocente = document.getElementById("docente");
-if (selectDocente) {
-  fetch("http://localhost:3000/api/evaluaciones/docentes")
-    .then(res => res.json())
+(function initResultados() {
+  const onPage = location.pathname.endsWith("resultados.html");
+  if (!onPage) return;
+
+  showLogoutIfNeeded();
+
+  const tbody = document.getElementById("tabla-resultados");
+  fetch(`${API}/evaluaciones/resultados`)
+    .then(r => r.json())
     .then(data => {
-      selectDocente.innerHTML = ""; // Limpia opciones previas
-      if (data.length === 0) {
-        const option = document.createElement("option");
-        option.textContent = "No hay docentes registrados";
-        option.disabled = true;
-        option.selected = true;
-        selectDocente.appendChild(option);
-      } else {
-        data.forEach(d => {
-          const option = document.createElement("option");
-          option.value = d.id_docente;
-          option.textContent = `${d.nombre} - ${d.materia}`;
-          selectDocente.appendChild(option);
-        });
-      }
-    })
-    .catch(err => console.error("❌ Error cargando docentes:", err));
-}
-
-// =========================
-// 📌 Mostrar resultados (resultados.html)
-// =========================
-const tabla = document.getElementById("tabla-resultados");
-const ctx = document.getElementById("graficaResultados");
-
-if (tabla) {
-  fetch("http://localhost:3000/api/evaluaciones/resultados")
-    .then(res => res.json())
-    .then(data => {
-      tabla.innerHTML = ""; // Limpia antes
-
-      let promedios = { claridad: 0, puntualidad: 0, dominio: 0, trato: 0 };
-      let totalDocentes = 0;
-
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.nombre}</td>
-          <td>${row.materia}</td>
-          <td>${row.total_evaluaciones}</td>
-          <td>${row.promedio_claridad ? parseFloat(row.promedio_claridad).toFixed(2) : "-"}</td>
-          <td>${row.promedio_puntualidad ? parseFloat(row.promedio_puntualidad).toFixed(2) : "-"}</td>
-          <td>${row.promedio_dominio ? parseFloat(row.promedio_dominio).toFixed(2) : "-"}</td>
-          <td>${row.promedio_trato ? parseFloat(row.promedio_trato).toFixed(2) : "-"}</td>
+      tbody.innerHTML = data.map(d => {
+        const inactivo = d.estado === "Inactivo";
+        const estadoClass = inactivo ? "estado-inactivo" : (d.estado === "Activo" ? "estado-activo" : "");
+        const trClass = inactivo ? "inactivo" : "";
+        return `
+          <tr class="${trClass}">
+            <td>${d.nombre}</td>
+            <td>${d.materia}</td>
+            <td>${Number(d.promedio_claridad).toFixed(2)}</td>
+            <td>${Number(d.promedio_puntualidad).toFixed(2)}</td>
+            <td>${Number(d.promedio_dominio).toFixed(2)}</td>
+            <td>${Number(d.promedio_trato).toFixed(2)}</td>
+            <td><strong>${Number(d.calificacion_total).toFixed(2)}</strong></td>
+            <td class="${estadoClass}">${d.estado}</td>
+          </tr>
         `;
-        tabla.appendChild(tr);
-
-        // Solo sumamos promedios de los que sí tienen evaluaciones
-        if (row.total_evaluaciones > 0) {
-          promedios.claridad += parseFloat(row.promedio_claridad);
-          promedios.puntualidad += parseFloat(row.promedio_puntualidad);
-          promedios.dominio += parseFloat(row.promedio_dominio);
-          promedios.trato += parseFloat(row.promedio_trato);
-          totalDocentes++;
-        }
-      });
-
-      if (totalDocentes > 0 && ctx) {
-        promedios = {
-          claridad: promedios.claridad / totalDocentes,
-          puntualidad: promedios.puntualidad / totalDocentes,
-          dominio: promedios.dominio / totalDocentes,
-          trato: promedios.trato / totalDocentes
-        };
-
-        new Chart(ctx, {
-          type: "bar",
-          data: {
-            labels: ["Claridad", "Puntualidad", "Dominio", "Trato"],
-            datasets: [{
-              label: "Promedio Global",
-              data: [
-                promedios.claridad.toFixed(2),
-                promedios.puntualidad.toFixed(2),
-                promedios.dominio.toFixed(2),
-                promedios.trato.toFixed(2)
-              ],
-              backgroundColor: ["#0d6efd", "#198754", "#ffc107", "#dc3545"]
-            }]
-          },
-          options: { 
-            responsive: true, 
-            plugins: { legend: { display: false } } 
-          }
-        });
-      }
+      }).join("");
     })
-    .catch(err => console.error("❌ Error mostrando resultados:", err));
-}
+    .catch(() => {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted">No se pudieron cargar los resultados</td></tr>`;
+    });
+})();

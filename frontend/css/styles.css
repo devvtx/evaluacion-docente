@@ -1,0 +1,26 @@
+body {
+  background: #f7f7f9;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+.card {
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+  border-radius: .75rem;
+}
+
+.estado-activo {
+  color: #198754; /* verde */
+  font-weight: 700;
+}
+
+.estado-inactivo {
+  color: #dc3545; /* rojo */
+  font-weight: 800;
+}
+
+tr.inactivo {
+  background: #ffe5e9 !important;
+}

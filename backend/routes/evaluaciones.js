@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/evaluacionesController");
+const auth = require("../middleware/auth");
 
 // Rutas
-router.post("/guardar", controller.guardarEvaluacion);
+router.post("/guardar", auth, controller.guardarEvaluacion);
 router.get("/resultados", controller.obtenerResultados);
-router.get("/docentes", controller.obtenerDocentes); // 👈 asegúrate que exista en el controller
+router.get("/docentes", controller.obtenerDocentes);
 
 module.exports = router;
