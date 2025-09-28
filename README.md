@@ -68,21 +68,20 @@ evaluacion-docente/
 
 
 
-SQL de consulta
+## SQL de consulta
 En database/consultas.sql tienes:
 
-Listados básicos (docentes, estudiantes, evaluaciones).
-Agregados + estado (igual que backend).
-Top 5 por calificación total.
-Detalle por docente/estudiante.
-Varios filtros (por materia, por nombre) y ejemplos de UPSERT.
+  Listados básicos (docentes, estudiantes, evaluaciones).
+  Agregados + estado (igual que backend).
+  Top 5 por calificación total.
+  Detalle por docente/estudiante.
+  Varios filtros (por materia, por nombre) y ejemplos de UPSERT.
 
-Notas de seguridad
+## Notas de seguridad
 Cambia JWT_SECRET por uno fuerte en producción.
 
 
-
- Troubleshooting
+## Troubleshooting
 “Error en el servidor” al registrar/iniciar sesión:
 Verifica que importaste schema.sql y que el backend puede conectar a MySQL (DB_HOST/USER/PASS/NAME correctos).
 
@@ -91,9 +90,6 @@ Actualiza el plugin de auth del usuario o crea uno con mysql_native_password.
 
 401/No autorizado al guardar evaluación:
 Asegúrate de enviar el header Authorization: Bearer <token> (el frontend lo hace automáticamente tras login/registro).
-
-CORS:
-El backend ya trae cors habilitado.
 
 ✍️ Autor
 by devvtx
