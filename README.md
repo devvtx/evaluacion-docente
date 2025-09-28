@@ -6,7 +6,7 @@ Aplicación web para que estudiantes se **registren/inicien sesión** y **evalú
 
 ---
 
-##  Tecnologías
+## Tecnologías
 
 - **Frontend:** HTML5, CSS3, Bootstrap 5, JavaScript (fetch + localStorage)
 - **Backend:** Node.js, Express, JWT (autenticación), bcryptjs (hash)
@@ -15,7 +15,7 @@ Aplicación web para que estudiantes se **registren/inicien sesión** y **evalú
 
 ---
 
-##  Funcionalidades
+## Funcionalidades
 
 - Registro e inicio de sesión con **JWT**.
 - Cada estudiante puede **evaluar 1 vez por docente** (si vuelve a evaluar, se **actualiza**).
@@ -28,7 +28,8 @@ Aplicación web para que estudiantes se **registren/inicien sesión** y **evalú
 
 ---
 
-##  Estructura del proyecto
+## 🗂 Estructura del proyecto
+
 evaluacion-docente/
 ├─ backend/
 │ ├─ controllers/
@@ -60,134 +61,28 @@ evaluacion-docente/
 └─ README.md
 
 
----
-
-## ✅ Requisitos
+## Requisitos
 
 - **Node.js 18+**
 - **MySQL 8** en local (con usuario que tenga permisos para crear BD/tablas)
 
----
 
-##  Configuración y ejecución (local, sin Docker)
 
-### 1) Base de datos
-Importa el esquema:
-
-```sql
--- En MySQL (Workbench/CLI)
-SOURCE /ruta/completa/a/database/schema.sql;
-
-Esto creará la BD evaluacion_docentes, tablas, seed de docentes, la vista v_resultados_docentes y el procedure sp_guardar_evaluacion.
-
-2) Variables de entorno del backend
-
-Crea un archivo backend/.env:
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=root
-DB_NAME=evaluacion_docentes
-JWT_SECRET=cambia_este_secreto
-
-Ajusta DB_USER y DB_PASS a tus credenciales reales de MySQL.
-
-3) Instalar dependencias y levantar backend
-
-cd backend
-npm install
-npm start
-# Servidor en http://localhost:3000
-
-Verás en consola: ✅ Conectado a MySQL y 🚀 Servidor corriendo...
-
-4) Abrir frontend
-
-Opción 1 (rápida): abre frontend/index.html con doble clic (protocolo file://).
-
-main.js detecta file:// y usará http://localhost:3000/api.
-
-Opción 2 (recomendado): usa un servidor estático (Live Server en VS Code) apuntando a frontend/.
-
-Uso
-
-En index.html se abrirá un modal para registrarte o iniciar sesión (se guarda el token en localStorage).
-
-En evaluar.html, selecciona un docente y envía tu evaluación (1..10).
-
-Si evalúas de nuevo al mismo docente, se actualiza tu evaluación.
-
-En resultados.html, revisa promedios y calificación total.
-
-Si total < 7 → Inactivo (fila en rojo).
-
-🔌 API (resumen)
-
-Base URL (local): http://localhost:3000/api
-
-Auth
-
-POST /auth/register
-Body: { "nombre": "Juan Pérez", "email": "juan@x.com", "password": "1234" }
-
-POST /auth/login
-Body: { "email": "juan@x.com", "password": "1234" }
-Res: { success, token, user }
-
-Guarda el token y envíalo en Authorization: Bearer <token> para rutas protegidas.
-
-Evaluaciones / Docentes
-
-GET /evaluaciones/docentes → Lista de docentes
-
-POST /evaluaciones/guardar (protegida)
-Body:
-
-{
-  "id_docente": 1,
-  "claridad": 8,
-  "puntualidad": 9,
-  "dominio_tema": 9,
-  "trato_estudiantes": 8,
-  "comentarios": "Muy bien"
-}
-
-{
-  "id_docente": 1,
-  "claridad": 8,
-  "puntualidad": 9,
-  "dominio_tema": 9,
-  "trato_estudiantes": 8,
-  "comentarios": "Muy bien"
-}
-
-Upsert por (id_docente, id_estudiante) del token.
-
-GET /evaluaciones/resultados → Promedios, calificación total y estado por docente
-
- SQL de consulta
-
+SQL de consulta
 En database/consultas.sql tienes:
 
 Listados básicos (docentes, estudiantes, evaluaciones).
-
 Agregados + estado (igual que backend).
-
 Top 5 por calificación total.
-
 Detalle por docente/estudiante.
-
 Varios filtros (por materia, por nombre) y ejemplos de UPSERT.
 
 Notas de seguridad
-
 Cambia JWT_SECRET por uno fuerte en producción.
 
-No subas credenciales reales al repo (usa .env).
 
-En producción, sirve el frontend detrás de un servidor y el backend con HTTPS.
 
  Troubleshooting
-
 “Error en el servidor” al registrar/iniciar sesión:
 Verifica que importaste schema.sql y que el backend puede conectar a MySQL (DB_HOST/USER/PASS/NAME correctos).
 
@@ -200,6 +95,7 @@ Asegúrate de enviar el header Authorization: Bearer <token> (el frontend lo hac
 CORS:
 El backend ya trae cors habilitado.
 
- Autor
-
+✍️ Autor
 by devvtx
+
+
