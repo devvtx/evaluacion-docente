@@ -91,6 +91,8 @@ Actualiza el plugin de auth del usuario o crea uno con mysql_native_password.
 401/No autorizado al guardar evaluación:
 Asegúrate de enviar el header Authorization: Bearer <token> (el frontend lo hace automáticamente tras login/registro).
 
+---
+
 ✍️ Autor
 by devvtx
 
