@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar navbar-dark bg-primary p-3">
     <a class="navbar-brand" href="index.html">Evaluación Docente</a>
     <div>
@@ -16,21 +15,34 @@
     </div>
   </nav>
 
-  <!-- Contenedor -->
   <div class="container mt-5">
     <h2 class="mb-4">Nueva evaluación</h2>
-
-    <!-- Info de sesión -->
     <div id="userInfo" class="alert alert-info d-none"></div>
 
+    <!-- Filtros -->
+    <div class="card p-3 mb-3">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Carrera</label>
+          <select id="flt-carrera" class="form-select"></select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Semestre</label>
+          <select id="flt-semestre" class="form-select">
+            <option value="">—</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <form id="form-evaluacion" class="card p-3">
-      <!-- Docente -->
       <div class="mb-3">
         <label class="form-label">Docente</label>
         <select name="id_docente" id="select-docente" class="form-select" required></select>
       </div>
 
-      <!-- Claridad (1..10) -->
       <div class="mb-3">
         <label class="form-label d-flex justify-content-between">
           <span>Claridad al explicar</span> <span id="lbl-claridad">5</span>
@@ -38,7 +50,6 @@
         <input type="range" class="form-range" name="claridad" min="1" max="10" value="5" oninput="document.getElementById('lbl-claridad').textContent=this.value" required>
       </div>
 
-      <!-- Puntualidad (1..10) -->
       <div class="mb-3">
         <label class="form-label d-flex justify-content-between">
           <span>Puntualidad</span> <span id="lbl-puntualidad">5</span>
@@ -46,7 +57,6 @@
         <input type="range" class="form-range" name="puntualidad" min="1" max="10" value="5" oninput="document.getElementById('lbl-puntualidad').textContent=this.value" required>
       </div>
 
-      <!-- Dominio del tema (1..10) -->
       <div class="mb-3">
         <label class="form-label d-flex justify-content-between">
           <span>Dominio del tema</span> <span id="lbl-dominio">5</span>
@@ -54,7 +64,6 @@
         <input type="range" class="form-range" name="dominio_tema" min="1" max="10" value="5" oninput="document.getElementById('lbl-dominio').textContent=this.value" required>
       </div>
 
-      <!-- Trato (1..10) -->
       <div class="mb-3">
         <label class="form-label d-flex justify-content-between">
           <span>Trato hacia los estudiantes</span> <span id="lbl-trato">5</span>
@@ -62,7 +71,6 @@
         <input type="range" class="form-range" name="trato_estudiantes" min="1" max="10" value="5" oninput="document.getElementById('lbl-trato').textContent=this.value" required>
       </div>
 
-      <!-- Comentarios -->
       <div class="mb-3">
         <label class="form-label">Comentarios</label>
         <textarea name="comentarios" class="form-control" rows="3" placeholder="Opcional"></textarea>
@@ -72,7 +80,6 @@
     </form>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/main.js"></script>
 </body>

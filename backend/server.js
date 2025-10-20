@@ -13,9 +13,11 @@ app.use(bodyParser.json());
 // Rutas
 const evaluacionesRoutes = require("./routes/evaluaciones");
 const authRoutes = require("./routes/auth");
+const catalogosRoutes = require("./routes/catalogos");
 
 app.use("/api/evaluaciones", evaluacionesRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/catalogos", catalogosRoutes);
 
 // Servidor
 app.listen(port, () => {

@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar navbar-dark bg-primary p-3">
     <a class="navbar-brand" href="index.html">Evaluación Docente</a>
     <div>
@@ -17,7 +16,36 @@
   </nav>
 
   <section class="container mt-5">
-    <h2 class="mb-4">Resultados por docente</h2>
+    <h2 class="mb-3">Resultados por docente</h2>
+
+    <!-- Filtros -->
+    <div class="card p-3 mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Campus</label>
+          <select id="res-campus" class="form-select">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label">Carrera</label>
+          <select id="res-carrera" class="form-select">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Semestre</label>
+          <select id="res-semestre" class="form-select">
+            <option value="">Todos</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-3">
+        <button id="btn-filtrar" class="btn btn-primary">Aplicar filtros</button>
+      </div>
+    </div>
 
     <div class="table-responsive">
       <table class="table table-hover align-middle">
@@ -25,21 +53,40 @@
           <tr>
             <th>Docente</th>
             <th>Materia</th>
+            <th>Carrera (id)</th>
+            <th>Sem</th>
             <th>Claridad</th>
             <th>Puntualidad</th>
             <th>Dominio</th>
             <th>Trato</th>
-            <th>Calificación total</th>
+            <th>Calificación</th>
             <th>Estado</th>
           </tr>
         </thead>
         <tbody id="tabla-resultados"></tbody>
       </table>
     </div>
+
+    <h3 class="mt-5">Métricas</h3>
+    <p id="met-totales" class="small text-muted"></p>
+    <div class="row">
+      <div class="col-md-4">
+        <h6>Campus que evalúan</h6>
+        <ul id="met-campus" class="mb-3"></ul>
+      </div>
+      <div class="col-md-4">
+        <h6>Alumnos por carrera</h6>
+        <ul id="met-carreras" class="mb-3"></ul>
+      </div>
+      <div class="col-md-4">
+        <h6>Faltantes</h6>
+        <ul id="met-faltantes" class="mb-3"></ul>
+      </div>
+    </div>
   </section>
 
   <footer class="bg-dark text-white text-center p-3 mt-5">
-    <p class="mb-0">© 2025 by devvtx</p>
+    <p class="mb-0">© Evaluacion Docente</p>
   </footer>
 
   <script src="js/main.js"></script>

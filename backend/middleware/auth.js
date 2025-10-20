@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
   }
   try {
     const payload = jwt.verify(parts[1], JWT_SECRET);
-    req.user = payload; // { id_estudiante, nombre, email }
+    req.user = payload; // { id_estudiante, nombre, email, campus_id, carrera_id, semestre }
     next();
   } catch {
     return res.status(401).json({ success: false, message: "Token inválido o expirado" });
