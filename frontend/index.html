@@ -28,63 +28,112 @@
     </div>
   </main>
 
-  <footer><p class="mb-0">© Evaluacion Docente</p></footer>
+  <footer><p class="mb-0">© Evaluación Docente</p></footer>
 
   <!-- Modal Auth -->
   <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">Acceder</h5>
+      <div class="modal-content auth-modal">
+        <div class="modal-header auth-modal-header text-white">
+          <div>
+            <h5 class="modal-title mb-0">Acceder</h5>
+            <div class="small opacity-75">Autentícate para continuar</div>
+          </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <ul class="nav nav-tabs mb-3" role="tablist">
+
+        <div class="modal-body p-4">
+          <ul class="nav nav-pills auth-tabs mb-3" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#loginTab" type="button" role="tab">Iniciar sesión</button>
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#loginTab" type="button" role="tab">
+                Iniciar sesión
+              </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#registerTab" type="button" role="tab">Registrarse</button>
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#registerTab" type="button" role="tab">
+                Registrarse
+              </button>
             </li>
           </ul>
+
           <div class="tab-content">
             <!-- Login -->
             <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
               <form id="form-login">
                 <div class="mb-3">
-                  <label class="form-label">Correo institucional</label>
-                  <input type="email" name="email" class="form-control" required>
+                  <label class="form-label">Correo</label>
+                  <input type="email" name="email" class="form-control auth-input" placeholder="tu.correo@dominio.com" required>
                 </div>
+
                 <div class="mb-3">
                   <label class="form-label">Contraseña</label>
-                  <input type="password" name="password" class="form-control" required minlength="4">
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control auth-input"
+                    required
+                    minlength="8"
+                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}"
+                    title="Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial"
+                    placeholder="••••••••"
+                  >
+                  <div class="form-text auth-help">
+                    Requisitos mínimos: 8 caracteres, 1 mayúscula, 1 número, 1 carácter especial.
+                  </div>
                 </div>
-                <button class="btn btn-primary w-100" type="submit">Entrar</button>
+
+                <button class="btn btn-primary w-100 auth-btn" type="submit">Entrar</button>
               </form>
             </div>
+
             <!-- Registro -->
             <div class="tab-pane fade" id="registerTab" role="tabpanel">
               <form id="form-register">
                 <div class="mb-3">
                   <label class="form-label">Nombre completo</label>
-                  <input type="text" name="nombre" class="form-control" required>
+                  <input type="text" name="nombre" class="form-control auth-input" required>
                 </div>
+
                 <div class="mb-3">
-                  <label class="form-label">Correo institucional</label>
-                  <input type="email" name="email" class="form-control" required>
+                  <label class="form-label">Correo</label>
+                  <input type="email" name="email" class="form-control auth-input" required>
                 </div>
+
+                <!-- Intercambio -->
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="reg-intercambio" name="es_intercambio" value="1">
+                    <label class="form-check-label" for="reg-intercambio">
+                      Estudiante de intercambio
+                    </label>
+                  </div>
+                </div>
+
+                <div id="reg-origen" class="card border-0 p-3 mb-3 d-none" style="background: rgba(13,110,253,.06); border-radius: .9rem;">
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <label class="form-label">Universidad de origen</label>
+                      <input type="text" name="universidad_origen" class="form-control auth-input" placeholder="Ej. Universidad X">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Programa de origen</label>
+                      <input type="text" name="programa_origen" class="form-control auth-input" placeholder="Ej. Ingeniería / Licenciatura">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="row g-2">
                   <div class="col-md-4">
                     <label class="form-label">Campus</label>
-                    <select id="reg-campus" name="campus_id" class="form-select" required></select>
+                    <select id="reg-campus" name="campus_id" class="form-select auth-input" required></select>
                   </div>
                   <div class="col-md-5">
                     <label class="form-label">Carrera</label>
-                    <select id="reg-carrera" name="carrera_id" class="form-select" required></select>
+                    <select id="reg-carrera" name="carrera_id" class="form-select auth-input" required></select>
                   </div>
                   <div class="col-md-3">
                     <label class="form-label">Semestre</label>
-                    <select name="semestre" class="form-select" required>
+                    <select name="semestre" class="form-select auth-input" required>
                       <option value="">—</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -99,14 +148,29 @@
                     </select>
                   </div>
                 </div>
+
                 <div class="mb-3 mt-2">
                   <label class="form-label">Contraseña</label>
-                  <input type="password" name="password" class="form-control" required minlength="4">
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control auth-input"
+                    required
+                    minlength="8"
+                    pattern="(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}"
+                    title="Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial"
+                    placeholder="Crea una contraseña segura"
+                  >
+                  <div class="form-text auth-help">
+                    Requisitos mínimos: 8 caracteres, 1 mayúscula, 1 número, 1 carácter especial.
+                  </div>
                 </div>
-                <button class="btn btn-success w-100" type="submit">Crear cuenta</button>
+
+                <button class="btn btn-success w-100 auth-btn" type="submit">Crear cuenta</button>
               </form>
             </div>
           </div>
+
           <div id="authMsg" class="mt-3 small text-center"></div>
         </div>
       </div>

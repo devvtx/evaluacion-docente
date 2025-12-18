@@ -5,3 +5,52 @@ body { background: #f7f7f9; }
 .estado-activo { color: #198754; font-weight: 700; }
 .estado-inactivo { color: #dc3545; font-weight: 800; }
 tr.inactivo { background: #ffe5e9 !important; }
+
+/* ===== Login modal polish ===== */
+.auth-modal {
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0,0,0,.18);
+}
+
+.auth-modal-header {
+  border-bottom: 0;
+  background: linear-gradient(135deg, #0d6efd, #0a58ca);
+  padding: 1rem 1.25rem;
+}
+
+.auth-tabs .nav-link {
+  border-radius: 999px;
+  padding: .45rem .9rem;
+  font-weight: 600;
+  color: #0d6efd;
+  background: rgba(13,110,253,.08);
+}
+
+.auth-tabs .nav-link.active {
+  color: #fff;
+  background: #0d6efd;
+  box-shadow: 0 10px 22px rgba(13,110,253,.25);
+}
+
+.auth-input {
+  border-radius: .75rem;
+  padding: .65rem .85rem;
+}
+
+.auth-input:focus {
+  box-shadow: 0 0 0 .2rem rgba(13,110,253,.15);
+  border-color: rgba(13,110,253,.55);
+}
+
+.auth-help {
+  margin-top: .35rem;
+  color: rgba(0,0,0,.65);
+}
+
+.auth-btn {
+  border-radius: .75rem;
+  padding: .65rem 1rem;
+  font-weight: 700;
+}

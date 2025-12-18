@@ -1,20 +1,21 @@
 const db = require("../models/db");
 
-// Guardar / Actualizar evaluación. Valida carrera/semestre del docente = alumno.
+// Guardar / Actualizar evaluación.
+// Validación: carrera + semestre (incluye intercambio).
 exports.guardarEvaluacion = (req, res) => {
   const { id_estudiante, carrera_id: carreraAlumno, semestre: semestreAlumno } = req.user || {};
   const { id_docente, claridad, puntualidad, dominio_tema, trato_estudiantes, comentarios } = req.body;
 
   if (!id_estudiante) return res.status(401).json({ success: false, message: "No autorizado" });
+
   if (!id_docente || !claridad || !puntualidad || !dominio_tema || !trato_estudiantes) {
     return res.status(400).json({ success: false, message: "Faltan datos de la evaluación" });
   }
 
-  // Verificar que el docente pertenezca a la misma carrera y semestre del alumno
   const qCheck = "SELECT carrera_id, semestre FROM docentes WHERE id_docente = ?";
-  db.query(qCheck, [id_docente], (err, rows) => {
+  db.query(qCheck, [Number(id_docente)], (err, rows) => {
     if (err) return res.status(500).json({ success: false, message: "Error en el servidor" });
-    if (rows.length === 0) return res.status(404).json({ success: false, message: "Docente no encontrado" });
+    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: "Docente no encontrado" });
 
     const { carrera_id: carreraDoc, semestre: semestreDoc } = rows[0];
     if (Number(carreraDoc) !== Number(carreraAlumno) || Number(semestreDoc) !== Number(semestreAlumno)) {
@@ -32,9 +33,18 @@ exports.guardarEvaluacion = (req, res) => {
         comentarios = VALUES(comentarios),
         created_at = CURRENT_TIMESTAMP
     `;
+
     db.query(
       sql,
-      [id_docente, id_estudiante, claridad, puntualidad, dominio_tema, trato_estudiantes, comentarios || null],
+      [
+        Number(id_docente),
+        Number(id_estudiante),
+        Number(claridad),
+        Number(puntualidad),
+        Number(dominio_tema),
+        Number(trato_estudiantes),
+        comentarios || null
+      ],
       (err2) => {
         if (err2) return res.status(500).json({ success: false, message: "Error al guardar" });
         res.json({ success: true, message: "Evaluación guardada" });
@@ -43,13 +53,12 @@ exports.guardarEvaluacion = (req, res) => {
   });
 };
 
-// Docentes disponibles PARA EL ALUMNO AUTENTICADO.
-// Siempre filtra por la carrera y semestre del alumno, ignorando query externa.
+// Docentes por carrera/semestre del alumno (del token)
 exports.obtenerDocentes = (req, res) => {
-  const { carrera_id, semestre } = req.user || {};
-  if (!carrera_id || !semestre) {
-    return res.status(401).json({ success: false, message: "No autorizado" });
-  }
+  const { id_estudiante, carrera_id, semestre } = req.user || {};
+  if (!id_estudiante) return res.status(401).json({ success: false, message: "No autorizado" });
+  if (!carrera_id || !semestre) return res.status(400).json({ success: false, message: "Falta carrera/semestre" });
+
   const sql = `
     SELECT id_docente, nombre, materia, carrera_id, semestre
     FROM docentes
@@ -62,7 +71,7 @@ exports.obtenerDocentes = (req, res) => {
   });
 };
 
-// Resultados agregados con filtros opcionales (público)
+// Resultados con filtros opcionales (por carrera/semestre; campus sigue siendo del alumno evaluador si lo filtras así)
 exports.obtenerResultados = (req, res) => {
   const { campus_id, carrera_id, semestre } = req.query;
 
@@ -128,7 +137,6 @@ exports.obtenerResultados = (req, res) => {
   });
 };
 
-// Métricas (sin cambios)
 exports.obtenerMetricas = (req, res) => {
   const queries = {
     totales: `
@@ -174,14 +182,14 @@ exports.obtenerMetricas = (req, res) => {
   db.query(queries.totales, [], (err, r1) => {
     if (err) return res.status(500).json({ success: false, message: "Error métricas" });
     result.totales = r1[0] || {};
-    db.query(queries.campusQueEvaluan, [], (err, r2) => {
-      if (err) return res.status(500).json({ success: false, message: "Error métricas" });
+    db.query(queries.campusQueEvaluan, [], (err2, r2) => {
+      if (err2) return res.status(500).json({ success: false, message: "Error métricas" });
       result.campus = r2;
-      db.query(queries.alumnosPorCarrera, [], (err, r3) => {
-        if (err) return res.status(500).json({ success: false, message: "Error métricas" });
+      db.query(queries.alumnosPorCarrera, [], (err3, r3) => {
+        if (err3) return res.status(500).json({ success: false, message: "Error métricas" });
         result.carreras = r3;
-        db.query(queries.faltantes, [], (err, r4) => {
-          if (err) return res.status(500).json({ success: false, message: "Error métricas" });
+        db.query(queries.faltantes, [], (err4, r4) => {
+          if (err4) return res.status(500).json({ success: false, message: "Error métricas" });
           result.faltantes = r4;
           res.json(result);
         });
